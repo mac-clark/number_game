@@ -47,25 +47,11 @@ play_game() {
 # Function to update user statistics in the database
 update_stats() {
   local guesses=$1
-
-  # Debugging: Show the command about to execute
-  #echo "Updating games played: UPDATE users SET games_played = games_played + 1 WHERE username = '$username'"
-  # Update games played
   update_result=$($PSQL "UPDATE users SET games_played = games_played + 1 WHERE username = '$username'")
-  #echo "Update Result: $update_result"
-
-  # Debugging: Show the command about to execute
-  #echo "Fetching current best game: SELECT best_game FROM users WHERE username = '$username'"
-  # Fetch the current best or default to a large number if null
   current_best=$($PSQL "SELECT best_game FROM users WHERE username = '$username'")
-  #echo "Current Best: $current_best"
 
   if [[ -z $current_best || $current_best -gt $guesses ]]; then
-    # Debugging: Show the command about to execute
-    #echo "Updating best game: UPDATE users SET best_game = $guesses WHERE username = '$username'"
-    # Update best game if the current guess count is lower
     best_update_result=$($PSQL "UPDATE users SET best_game = $guesses WHERE username = '$username'")
-    #echo "Best Update Result: $best_update_result"
   fi
 }
 
