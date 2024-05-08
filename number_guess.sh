@@ -5,17 +5,19 @@ PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
 # Function to get the user's username and check against the database
 get_username() {
-  echo "Enter your username: "
+  echo "Enter your username:"
   read username
   result=$($PSQL "SELECT username, games_played, best_game FROM users WHERE username = '$username'")
+  
   if [[ -z $result ]]; then
     # User is new
     echo "Welcome, $username! It looks like this is your first time here."
     $($PSQL "INSERT INTO users (username) VALUES ('$username')")
   else
     # User exists, parse details
-    games_played=$(echo $result | cut -d '|' -f2)
-    best_game=$(echo $result | cut -d '|' -f3)
+    IFS='|' read -ra user_data <<< "$result"
+    games_played="${user_data[1]}"
+    best_game="${user_data[2]}"
     echo "Welcome back, $username! You have played $games_played games, and your best game took $best_game guesses."
   fi
 }
