@@ -56,5 +56,6 @@ update_stats() {
 }
 
 # Main script execution
+# Finally done!
 get_username
 play_game
